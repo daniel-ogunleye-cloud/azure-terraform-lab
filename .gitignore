@@ -10,3 +10,9 @@ override.tf.json
 .terraform.lock.hcl
 .DS_Store
 .env
+# Terraform state files
+*.tfstate
+*.tfstate.backup
+.terraform/
+.tfplan
+
