@@ -1,0 +1,9 @@
+#cloud-config
+package_update: true
+packages:
+  - nginx
+
+runcmd:
+  - systemctl enable nginx
+  - systemctl start nginx
+  - bash -lc 'echo "<h1>OK - VMSS NGINX is running</h1><p>Host: $(hostname)</p>" > /var/www/html/index.html'
