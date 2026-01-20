@@ -9,6 +9,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
 
   sku       = var.vmss_sku
   instances = var.instance_count
+  health_probe_id = var.lb_probe_id
+
 
 
   admin_username                  = var.admin_username
@@ -50,3 +52,67 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   upgrade_mode = "Manual"
 }
 
+resource "azurerm_monitor_autoscale_setting" "vmss_cpu" {
+  name                = "${var.vmss_name}-autoscale-cpu"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+
+  target_resource_id = azurerm_linux_virtual_machine_scale_set.vmss.id
+  enabled            = true
+
+  profile {
+    name = "cpu-autoscale-default"
+
+    capacity {
+      minimum = tostring(var.autoscale_min)
+      default = tostring(var.autoscale_default)
+      maximum = tostring(var.autoscale_max)
+    }
+
+    # Scale OUT
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.vmss.id
+        metric_namespace   = "Microsoft.Compute/virtualMachineScaleSets"
+
+        time_grain       = "PT1M"
+        statistic        = "Average"
+        time_window      = "PT5M"
+        time_aggregation = "Average"
+        operator         = "GreaterThan"
+        threshold        = var.scale_out_cpu_threshold
+      }
+
+      scale_action {
+        direction = "Increase"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown  = "PT5M"
+      }
+    }
+
+    # Scale IN
+    rule {
+      metric_trigger {
+        metric_name        = "Percentage CPU"
+        metric_resource_id = azurerm_linux_virtual_machine_scale_set.vmss.id
+        metric_namespace   = "Microsoft.Compute/virtualMachineScaleSets"
+
+        time_grain       = "PT1M"
+        statistic        = "Average"
+        time_window      = "PT10M"
+        time_aggregation = "Average"
+        operator         = "LessThan"
+        threshold        = var.scale_in_cpu_threshold
+      }
+
+      scale_action {
+        direction = "Decrease"
+        type      = "ChangeCount"
+        value     = "1"
+        cooldown  = "PT10M"
+      }
+    }
+  }
+}
