@@ -20,9 +20,8 @@ variable "admin_username" {
   default = "azureuser"
 }
 
-variable "ssh_public_key_path" {
-  type        = string
-  description = "Path to your SSH public key (.pub)"
+variable "ssh_public_key" {
+  type = string
 }
 
 variable "vm_size" {
