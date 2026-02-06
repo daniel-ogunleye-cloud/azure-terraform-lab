@@ -4,7 +4,7 @@ module "network_hub" {
   project         = var.project
   env             = var.env
   location        = var.location
-  tags            = local.tags
+  tags            =    {}
   subscription_id = var.subscription_id
 
   hub_address_space       = var.hub_address_space
