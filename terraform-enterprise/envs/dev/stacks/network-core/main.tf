@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "hub_vnet" {
-  source              = "../../../../modules/vnet"
+  source              = "../../../../../modules/vnet"
   name                = local.hub_vnet_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
@@ -14,7 +14,7 @@ module "hub_vnet" {
 }
 
 module "hub_subnets" {
-  source              = "../../../../modules/subnets"
+  source              = "../../../../../modules/subnets"
   resource_group_name = azurerm_resource_group.rg.name
   vnet_name           = module.hub_vnet.name
 
@@ -29,7 +29,7 @@ module "hub_subnets" {
 }
 
 module "spoke_app_vnet" {
-  source              = "../../../../modules/vnet"
+  source              = "../../../../../modules/vnet"
   name                = local.spoke_app_vnet_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
@@ -38,7 +38,7 @@ module "spoke_app_vnet" {
 }
 
 module "spoke_subnets" {
-  source              = "../../../../modules/subnets"
+  source              = "../../../../../modules/subnets"
   resource_group_name = azurerm_resource_group.rg.name
   vnet_name           = module.spoke_app_vnet.name
 
@@ -52,7 +52,7 @@ module "spoke_subnets" {
 }
 
 module "nsg_spoke_app" {
-  source              = "../../../../modules/nsg"
+  source              = "../../../../../modules/nsg"
   name                = "${local.name_prefix}-nsg-spoke-app"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -87,7 +87,7 @@ module "nsg_spoke_app" {
 }
 
 module "nsg_spoke_private_endpoints" {
-  source              = "../../../../modules/nsg"
+  source              = "../../../../../modules/nsg"
   name                = "${local.name_prefix}-nsg-spoke-private-endpoints"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -122,7 +122,7 @@ module "nsg_spoke_private_endpoints" {
 }
 
 module "nsg_spoke_mgmt" {
-  source              = "../../../../modules/nsg"
+  source              = "../../../../../modules/nsg"
   name                = "${local.name_prefix}-nsg-spoke-mgmt"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -174,7 +174,7 @@ resource "azurerm_subnet_network_security_group_association" "spoke_mgmt" {
 
 
 module "hub_spoke_peering" {
-  source = "../../../../modules/peering"
+  source = "../../../../../modules/peering"
 
   hub = {
     name                = module.hub_vnet.name
