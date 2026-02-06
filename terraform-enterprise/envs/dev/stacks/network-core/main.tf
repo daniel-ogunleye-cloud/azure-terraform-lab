@@ -5,20 +5,16 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "network_hub" {
-  source = "../../modules/network-hub"
+  source = "../../../modules/network-hub"
 
-  # required by network-hub module
+  project         = var.project
+  env             = var.env
   location        = var.location
   tags            = local.tags
   subscription_id = var.subscription_id
 
-  # optional (these have defaults in the module, but set them if you want consistency)
-  project = var.project
-  env     = var.env
-
-  # if you already use these vars in the stack, pass them through
-  hub_address_space   = var.hub_address_space
-  spoke_app_address_space = var.spoke_app_address_space
+  hub_address_space           = var.hub_address_space
+  spoke_app_address_space     = var.spoke_app_address_space
 
   hub_subnet_firewall = var.hub_subnet_firewall
   hub_subnet_bastion  = var.hub_subnet_bastion
