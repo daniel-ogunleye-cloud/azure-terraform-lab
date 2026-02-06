@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "network_hub" {
-  source = "../../../modules/network-hub"
+  source = "../../../../modules/network-hub"
 
   project         = var.project
   env             = var.env
