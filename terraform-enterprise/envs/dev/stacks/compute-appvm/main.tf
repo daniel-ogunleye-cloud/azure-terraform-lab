@@ -24,7 +24,7 @@ resource "azurerm_network_interface" "vm_nic" {
 
   ip_configuration {
     name                          = "ipconfig1"
-    subnet_id                     = data.terraform_remote_state.network.outputs.spoke_subnet_ids[0]
+    subnet_id                     = data.terraform_remote_state.network.outputs.spoke_subnet_ids["app"]
     private_ip_address_allocation = "Dynamic"
   }
 }
