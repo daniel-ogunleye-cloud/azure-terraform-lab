@@ -1,0 +1,38 @@
+data "azurerm_resource_group" "hub" {
+  name = var.hub_rg_name
+}
+
+data "azurerm_virtual_network" "hub" {
+  name                = var.hub_vnet_name
+  resource_group_name = data.azurerm_resource_group.hub.name
+}
+
+data "azurerm_subnet" "firewall" {
+  name                 = "AzureFirewallSubnet"
+  virtual_network_name = data.azurerm_virtual_network.hub.name
+  resource_group_name  = data.azurerm_resource_group.hub.name
+}
+
+resource "azurerm_public_ip" "firewall" {
+  name                = var.firewall_pip_name
+  location            = var.location
+  resource_group_name = data.azurerm_resource_group.hub.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+}
+
+resource "azurerm_firewall" "fw" {
+  name                = var.firewall_name
+  location            = var.location
+  resource_group_name = data.azurerm_resource_group.hub.name
+  sku_name            = "AZFW_VNet"
+  sku_tier            = "Standard"
+
+  ip_configuration {
+    name                 = "fw-ipconfig"
+    subnet_id            = data.azurerm_subnet.firewall.id
+    public_ip_address_id = azurerm_public_ip.firewall.id
+  }
+
+  firewall_policy_id = azurerm_firewall_policy.fw_hub_policy.id
+}

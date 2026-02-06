@@ -1,14 +1,15 @@
 module "network_core" {
-  source = "../../../stacks/network-core"
-  # ... your variables
+  source = "./stacks/network-core"
+  subscription_id = var.subscription_id
 }
 
+
 module "network_spoke" {
-  source = "../../../stacks/network-spoke"
-  # ... your variables
+  source = "./stacks/network-spoke"
+  # ...
 }
 
 module "security_core" {
-  source = "../../../stacks/security-core"
-  # ... your variables
+  source = "./stacks/security-core"
+  # ...
 }
