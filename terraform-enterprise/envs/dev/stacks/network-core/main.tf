@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "rg" {
 }
 
 module "network_hub" {
-  source = "../../../modules/network-hub"
+  source = "../../../../modules/network-hub"
 
   # required by network-hub module
   location        = var.location
