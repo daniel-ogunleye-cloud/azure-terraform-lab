@@ -68,33 +68,129 @@ module "spoke_subnets" {
 }
 
 ############################
-# NSGs
+# NSGs (WITH RULES)
 ############################
 module "nsg_spoke_app" {
-  source = "../../../modules/nsg"
-
+  source              = "../../../modules/nsg"
   name                = "${var.project}-${var.env}-nsg-spoke-app"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
+
+  rules = [
+    {
+      name                       = "AllowVNetInBound"
+      priority                   = 100
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "*"
+      description                = "Allow inbound from within VNet"
+    },
+    {
+      name                       = "DenyInternetInBound"
+      priority                   = 4096
+      direction                  = "Inbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "Internet"
+      destination_address_prefix = "*"
+      description                = "Block inbound from Internet"
+    }
+  ]
 }
 
 module "nsg_spoke_private_endpoints" {
-  source = "../../../modules/nsg"
-
+  source              = "../../../modules/nsg"
   name                = "${var.project}-${var.env}-nsg-spoke-pe"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
+
+  rules = [
+    {
+      name                       = "AllowVNetInBound"
+      priority                   = 100
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "*"
+      description                = "Allow inbound from within VNet"
+    },
+    {
+      name                       = "DenyInternetInBound"
+      priority                   = 4096
+      direction                  = "Inbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "Internet"
+      destination_address_prefix = "*"
+      description                = "Block inbound from Internet"
+    }
+  ]
 }
 
 module "nsg_spoke_mgmt" {
-  source = "../../../modules/nsg"
-
+  source              = "../../../modules/nsg"
   name                = "${var.project}-${var.env}-nsg-spoke-mgmt"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
+
+  rules = [
+    {
+      name                       = "AllowVNetInBound"
+      priority                   = 100
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "VirtualNetwork"
+      destination_address_prefix = "*"
+      description                = "Allow inbound from within VNet"
+    },
+    {
+      name                       = "DenyInternetInBound"
+      priority                   = 4096
+      direction                  = "Inbound"
+      access                     = "Deny"
+      protocol                   = "*"
+      source_port_range          = "*"
+      destination_port_range     = "*"
+      source_address_prefix      = "Internet"
+      destination_address_prefix = "*"
+      description                = "Block inbound from Internet"
+    }
+  ]
+}
+
+############################
+# ASSOCIATE NSGs TO SUBNETS
+############################
+resource "azurerm_subnet_network_security_group_association" "spoke_app" {
+  subnet_id                 = module.spoke_subnets.subnet_ids["app"]
+  network_security_group_id = module.nsg_spoke_app.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "spoke_private_endpoints" {
+  subnet_id                 = module.spoke_subnets.subnet_ids["private-endpoints"]
+  network_security_group_id = module.nsg_spoke_private_endpoints.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "spoke_mgmt" {
+  subnet_id                 = module.spoke_subnets.subnet_ids["mgmt"]
+  network_security_group_id = module.nsg_spoke_mgmt.id
 }
 
 ############################

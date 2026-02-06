@@ -1,9 +1,3 @@
-resource "azurerm_resource_group" "rg" {
-  name     = local.rg_name
-  location = var.location
-  tags     = local.tags
-}
-
 module "network_hub" {
   source = "../../../../modules/network-hub"
 
@@ -13,8 +7,8 @@ module "network_hub" {
   tags            = local.tags
   subscription_id = var.subscription_id
 
-  hub_address_space           = var.hub_address_space
-  spoke_app_address_space     = var.spoke_app_address_space
+  hub_address_space       = var.hub_address_space
+  spoke_app_address_space = var.spoke_app_address_space
 
   hub_subnet_firewall = var.hub_subnet_firewall
   hub_subnet_bastion  = var.hub_subnet_bastion

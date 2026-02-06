@@ -1,5 +1,5 @@
 output "resource_group_name" {
-  value = azurerm_resource_group.rg.name
+  value = module.network_hub.resource_group_name
 }
 
 output "hub_vnet_id" {
