@@ -9,6 +9,6 @@ resource "azurerm_firewall_policy" "fw_hub_policy" {
   }
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }

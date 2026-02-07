@@ -1,8 +1,9 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.project}-${var.env}-rg-network"
+  name     = local.rg_name
   location = var.location
-  tags     = var.tags
+  tags     = local.tags
 }
+
 
 ############################
 # HUB VNET
